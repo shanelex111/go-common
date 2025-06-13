@@ -5,6 +5,7 @@ type logEntryRequest struct {
 	Path   string              `json:"path"`
 	Header map[string][]string `json:"header"`
 	Body   string              `json:"body"`
+	Time   int64               `json:"time"`
 }
 
 type logEntryResponse struct {
@@ -12,4 +13,5 @@ type logEntryResponse struct {
 	Latency int64               `json:"latency"`
 	Header  map[string][]string `json:"header"`
 	Body    string              `json:"body"`
+	Time    int64               `json:"time"`
 }
