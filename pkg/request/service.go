@@ -49,18 +49,18 @@ func SetLogger() gin.HandlerFunc {
 
 		entry := logrus.WithFields(logrus.Fields{
 			"request": &logEntryRequest{
-				Method: c.Request.Method,
-				Path:   c.Request.URL.Path,
-				Body:   reqBody,
-				Header: c.Request.Header,
-				Time:   startTime,
+				Method:    c.Request.Method,
+				Path:      c.Request.URL.Path,
+				Body:      reqBody,
+				Header:    c.Request.Header,
+				Timestamp: startTime,
 			},
 			"response": &logEntryResponse{
-				Status:  status,
-				Latency: endTime - startTime,
-				Header:  c.Writer.Header(),
-				Body:    respBody.String(),
-				Time:    endTime,
+				Status:    status,
+				Latency:   endTime - startTime,
+				Header:    c.Writer.Header(),
+				Body:      respBody.String(),
+				Timestamp: endTime,
 			},
 		})
 
