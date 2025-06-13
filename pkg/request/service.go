@@ -5,9 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
+
+const (
+	XRequestIDKey = "X-Request-ID"
 )
 
 type bodyWriter struct {
@@ -78,5 +84,17 @@ func SetLogger() gin.HandlerFunc {
 		marshal, _ := json.Marshal(entry)
 		fmt.Println(string(marshal))
 
+	}
+}
+
+func SetUUID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		requestID := strings.TrimSpace(c.Request.Header.Get(XRequestIDKey))
+		if len(requestID) == 0 {
+			requestID = uuid.New().String()
+		}
+		c.Request.Header.Set(XRequestIDKey, requestID)
+		c.Writer.Header().Set(XRequestIDKey, requestID)
+		c.Next()
 	}
 }
