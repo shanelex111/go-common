@@ -1,5 +1,11 @@
 package request
 
+import "time"
+
+type logEntryLogger struct {
+	Level string    `json:"level"`
+	Time  time.Time `json:"time"`
+}
 type logEntryRequest struct {
 	Method    string              `json:"method"`
 	Path      string              `json:"path"`
@@ -14,4 +20,10 @@ type logEntryResponse struct {
 	Header    map[string][]string `json:"header"`
 	Body      string              `json:"body"`
 	Timestamp int64               `json:"timestamp"`
+}
+
+type logEntry struct {
+	Log      *logEntryLogger   `json:"log"`
+	Request  *logEntryRequest  `json:"request"`
+	Response *logEntryResponse `json:"response"`
 }

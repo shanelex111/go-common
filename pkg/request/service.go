@@ -2,11 +2,12 @@ package request
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 type bodyWriter struct {
@@ -21,9 +22,6 @@ func (w bodyWriter) Write(b []byte) (int, error) {
 
 func SetLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-		logrus.SetLevel(logrus.InfoLevel)
-
 		var (
 			startTime = time.Now().UnixMilli()
 			reqBody   string
@@ -47,31 +45,38 @@ func SetLogger() gin.HandlerFunc {
 			status  = c.Writer.Status()
 		)
 
-		entry := logrus.WithFields(logrus.Fields{
-			"request": &logEntryRequest{
+		entry := &logEntry{
+			Log: &logEntryLogger{
+				Level: "info",
+				Time:  time.Now(),
+			},
+			Request: &logEntryRequest{
 				Method:    c.Request.Method,
-				Path:      c.Request.URL.Path,
-				Body:      reqBody,
+				Path:      c.Request.RequestURI,
 				Header:    c.Request.Header,
+				Body:      reqBody,
 				Timestamp: startTime,
 			},
-			"response": &logEntryResponse{
+			Response: &logEntryResponse{
 				Status:    status,
 				Latency:   endTime - startTime,
 				Header:    c.Writer.Header(),
 				Body:      respBody.String(),
 				Timestamp: endTime,
 			},
-		})
+		}
 
 		switch {
 		case status >= 500:
-			entry.Log(logrus.ErrorLevel, "")
+			entry.Log.Level = "error"
 		case status >= 400:
-			entry.Log(logrus.WarnLevel, "")
+			entry.Log.Level = "warn"
 		default:
-			entry.Log(logrus.InfoLevel, "")
+			entry.Log.Level = "info"
 		}
+
+		marshal, _ := json.Marshal(entry)
+		fmt.Println(string(marshal))
 
 	}
 }
