@@ -62,7 +62,7 @@ func initClient() {
 	logrus.SetLevel(lvl)
 
 	// 3. 格式化
-	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetFormatter(&customJSONFormatter{})
 
 }
 func Init(v *viper.Viper) {

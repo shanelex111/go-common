@@ -14,10 +14,10 @@ type logger struct {
 	Time  time.Time `json:"time"`
 }
 
-type CustomJSONFormatter struct {
+type customJSONFormatter struct {
 }
 
-func (f *CustomJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+func (f *customJSONFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	data := make(logrus.Fields, len(entry.Data))
 	maps.Copy(data, entry.Data)
 
