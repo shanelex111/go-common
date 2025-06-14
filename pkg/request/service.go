@@ -51,30 +51,30 @@ func SetLogger() gin.HandlerFunc {
 			status  = c.Writer.Status()
 		)
 
-		entry := &logEntry{
-			Request: &logEntryRequest{
+		entry := logrus.WithFields(logrus.Fields{
+			"request": &logEntryRequest{
 				Method:    c.Request.Method,
 				Path:      c.Request.RequestURI,
 				Header:    c.Request.Header,
 				Body:      reqBody,
 				Timestamp: startTime,
 			},
-			Response: &logEntryResponse{
+			"response": &logEntryResponse{
 				Status:    status,
 				Latency:   endTime - startTime,
 				Header:    c.Writer.Header(),
 				Body:      respBody.String(),
 				Timestamp: endTime,
 			},
-		}
+		})
 
 		switch {
 		case status >= 500:
-			logrus.Error(entry)
+			entry.Error()
 		case status >= 400:
-			logrus.Warn(entry)
+			entry.Warn()
 		default:
-			logrus.Info(entry)
+			entry.Info()
 		}
 
 	}

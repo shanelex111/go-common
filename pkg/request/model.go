@@ -15,8 +15,3 @@ type logEntryResponse struct {
 	Body      string              `json:"body"`
 	Timestamp int64               `json:"timestamp"`
 }
-
-type logEntry struct {
-	Request  *logEntryRequest  `json:"request"`
-	Response *logEntryResponse `json:"response"`
-}
