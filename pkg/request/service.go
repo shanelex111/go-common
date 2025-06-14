@@ -2,14 +2,14 @@ package request
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
 	"io"
+
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -52,10 +52,6 @@ func SetLogger() gin.HandlerFunc {
 		)
 
 		entry := &logEntry{
-			Log: &logEntryLogger{
-				Level: "info",
-				Time:  time.Now(),
-			},
 			Request: &logEntryRequest{
 				Method:    c.Request.Method,
 				Path:      c.Request.RequestURI,
@@ -74,15 +70,12 @@ func SetLogger() gin.HandlerFunc {
 
 		switch {
 		case status >= 500:
-			entry.Log.Level = "error"
+			logrus.Error(entry)
 		case status >= 400:
-			entry.Log.Level = "warn"
+			logrus.Warn(entry)
 		default:
-			entry.Log.Level = "info"
+			logrus.Info(entry)
 		}
-
-		marshal, _ := json.Marshal(entry)
-		fmt.Println(string(marshal))
 
 	}
 }
