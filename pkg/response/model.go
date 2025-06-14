@@ -1,6 +1,6 @@
 package response
 
-type response struct {
+type Error struct {
 	Status  int    `json:"-"`
 	Code    int    `json:"code"`
 	Message string `json:"message"`
