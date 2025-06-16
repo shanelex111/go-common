@@ -1,7 +1,10 @@
 package util
 
 import (
+	"bytes"
+	"math/rand"
 	"net"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -65,4 +68,12 @@ func GetIP(c *gin.Context) string {
 		ip = strings.Split(ip, ":")[0]
 	}
 	return ip
+}
+
+func GetRandomNumber(num int) string {
+	var result bytes.Buffer
+	for range num {
+		result.WriteString(strconv.Itoa(rand.Intn(10)))
+	}
+	return result.String()
 }
