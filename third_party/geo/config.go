@@ -18,7 +18,7 @@ type config struct {
 	Path string `mapstructure:"path"`
 }
 
-func Load(v *viper.Viper) {
+func Init(v *viper.Viper) {
 	initConfig(v)
 	initClient()
 }
