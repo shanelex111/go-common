@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"github.com/shanelex111/go-common/pkg/util"
 	"github.com/sirupsen/logrus"
 )
 
@@ -84,7 +84,7 @@ func SetUUID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestID := strings.TrimSpace(c.Request.Header.Get(XRequestIDKey))
 		if len(requestID) == 0 {
-			requestID = uuid.New().String()
+			requestID = util.GetUUID()
 		}
 		c.Request.Header.Set(XRequestIDKey, requestID)
 		c.Writer.Header().Set(XRequestIDKey, requestID)
