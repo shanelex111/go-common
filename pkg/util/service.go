@@ -6,6 +6,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -76,4 +77,16 @@ func GetRandomNumber(num int) string {
 		result.WriteString(strconv.Itoa(rand.Intn(10)))
 	}
 	return result.String()
+}
+
+func GetTodayMilli() (int64, int64) {
+	// 当前时间
+	now := time.Now()
+
+	// 获取当前时间的年月日
+	year, month, day := now.Date()
+	location := now.Location()
+
+	return time.Date(year, month, day, 0, 0, 0, 0, location).UnixMilli(),
+		time.Date(year, month, day, 23, 59, 59, 999, location).UnixMilli()
 }
