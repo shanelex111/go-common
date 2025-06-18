@@ -4,7 +4,7 @@ import "github.com/spf13/viper"
 
 func Init(v *viper.Viper, inits ...func(v *viper.Viper)) {
 	for i := range inits {
-		go inits[i](v)
+		inits[i](v)
 	}
 }
 
