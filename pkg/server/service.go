@@ -15,5 +15,7 @@ func Run(runs ...func()) {
 }
 
 func Load(v *viper.Viper, loads ...func(v *viper.Viper)) {
-	Init(v, loads...)
+	for i := range loads {
+		loads[i](v)
+	}
 }
