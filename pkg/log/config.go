@@ -13,10 +13,6 @@ const (
 	defaultKey = "log"
 )
 
-var (
-	cfg *config
-)
-
 type config struct {
 	Level      string `mapstructure:"level"`
 	Filename   string `mapstructure:"filename"`
@@ -26,8 +22,8 @@ type config struct {
 	Compress   bool   `mapstructure:"compress"`
 }
 
-func initConfig(v *viper.Viper) {
-	cfg = &config{
+func initConfig(v *viper.Viper) *config {
+	cfg := &config{
 		Level:      LevelInfo,
 		Filename:   "./logs/app.log",
 		MaxSize:    100,
@@ -41,8 +37,9 @@ func initConfig(v *viper.Viper) {
 		}
 	}
 
+	return cfg
 }
-func initClient() {
+func (cfg *config) initClient() {
 	// 1. 输出路径
 	logFile := &lumberjack.Logger{
 		Filename:   cfg.Filename,
@@ -66,6 +63,6 @@ func initClient() {
 
 }
 func Init(v *viper.Viper) {
-	initConfig(v)
-	initClient()
+	cfg := initConfig(v)
+	cfg.initClient()
 }

@@ -12,7 +12,6 @@ const (
 )
 
 var (
-	cfg *config
 	RDB *redis.ClusterClient
 	Ctx = context.Background()
 )
@@ -25,19 +24,20 @@ type config struct {
 }
 
 func Init(v *viper.Viper) {
-	initConfig(v)
-	initClient()
+	cfg := initConfig(v)
+	cfg.initClient()
 }
 
-func initConfig(v *viper.Viper) {
-	cfg = &config{}
+func initConfig(v *viper.Viper) *config {
+	cfg := &config{}
 	if err := v.Sub(defaultKey).Unmarshal(cfg); err != nil {
 		panic(err)
 	}
+	return cfg
 
 }
 
-func initClient() {
+func (cfg *config) initClient() {
 	rdb := redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs:    cfg.Addrs,
 		Username: cfg.Username,

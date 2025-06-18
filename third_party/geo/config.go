@@ -10,8 +10,7 @@ const (
 )
 
 var (
-	cfg *config
-	DB  *geoip2.Reader
+	DB *geoip2.Reader
 )
 
 type config struct {
@@ -19,18 +18,19 @@ type config struct {
 }
 
 func Init(v *viper.Viper) {
-	initConfig(v)
-	initClient()
+	cfg := initConfig(v)
+	cfg.initClient()
 }
 
-func initConfig(v *viper.Viper) {
-	cfg = &config{}
+func initConfig(v *viper.Viper) *config {
+	cfg := &config{}
 	if err := v.Sub(defaultKey).Unmarshal(cfg); err != nil {
 		panic(err)
 	}
+	return cfg
 }
 
-func initClient() {
+func (cfg *config) initClient() {
 	db, err := geoip2.Open(cfg.Path)
 	if err != nil {
 		panic(err)
