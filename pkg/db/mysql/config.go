@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"sync"
+
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,7 +13,9 @@ const (
 )
 
 var (
-	DB *gorm.DB
+	DB        *gorm.DB
+	initOnce  sync.Once
+	closeOnce sync.Once
 )
 
 type config struct {
@@ -37,6 +41,19 @@ func (cfg *config) initClient() {
 }
 
 func Init(v *viper.Viper) {
-	cfg := initConfig(v)
-	cfg.initClient()
+	initOnce.Do(func() {
+		cfg := initConfig(v)
+		cfg.initClient()
+	})
+}
+
+func Close() {
+	closeOnce.Do(func() {
+		if DB != nil {
+			sqlDB, _ := DB.DB()
+			if sqlDB != nil {
+				sqlDB.Close()
+			}
+		}
+	})
 }

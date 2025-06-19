@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"sync"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
@@ -12,8 +13,10 @@ const (
 )
 
 var (
-	RDB *redis.ClusterClient
-	Ctx = context.Background()
+	RDB       *redis.ClusterClient
+	Ctx       = context.Background()
+	initOnce  sync.Once
+	closeOnce sync.Once
 )
 
 type config struct {
@@ -24,8 +27,10 @@ type config struct {
 }
 
 func Init(v *viper.Viper) {
-	cfg := initConfig(v)
-	cfg.initClient()
+	initOnce.Do(func() {
+		cfg := initConfig(v)
+		cfg.initClient()
+	})
 }
 
 func initConfig(v *viper.Viper) *config {
@@ -49,4 +54,12 @@ func (cfg *config) initClient() {
 	}
 
 	RDB = rdb
+}
+
+func Close() {
+	closeOnce.Do(func() {
+		if RDB != nil {
+			_ = RDB.Close()
+		}
+	})
 }
