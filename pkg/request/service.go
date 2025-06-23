@@ -110,7 +110,6 @@ func AuthAccessToken() gin.HandlerFunc {
 
 func AuthTokenInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		AuthAccessToken()(c)
 		tokenInfoHeader := c.GetHeader("Token-Info")
 		if len(tokenInfoHeader) == 0 {
 			c.AbortWithStatus(http.StatusUnauthorized)
