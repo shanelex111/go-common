@@ -108,6 +108,10 @@ func AuthAccessToken() gin.HandlerFunc {
 	}
 }
 
+const (
+	TokenInfoKey = "token_info"
+)
+
 func AuthTokenInfo() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenInfoHeader := c.GetHeader("Token-Info")
@@ -121,7 +125,7 @@ func AuthTokenInfo() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("token_info", &tokenInfo)
+		c.Set(TokenInfoKey, &tokenInfo)
 		c.Next()
 	}
 }
