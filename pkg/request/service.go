@@ -3,6 +3,7 @@ package request
 import (
 	"bytes"
 	"io"
+	"net/http"
 
 	"strings"
 	"time"
@@ -88,6 +89,20 @@ func SetUUID() gin.HandlerFunc {
 		}
 		c.Request.Header.Set(XRequestIDKey, requestID)
 		c.Writer.Header().Set(XRequestIDKey, requestID)
+		c.Next()
+	}
+}
+
+func TokenAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if len(authHeader) < 8 || !strings.HasPrefix(authHeader, "Bearer ") {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		accessToken := authHeader[7:]
+		c.Set("access_token", accessToken)
 		c.Next()
 	}
 }
