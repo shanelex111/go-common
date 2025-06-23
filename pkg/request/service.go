@@ -2,6 +2,7 @@ package request
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -93,7 +94,7 @@ func SetUUID() gin.HandlerFunc {
 	}
 }
 
-func TokenAuth() gin.HandlerFunc {
+func AuthAccessToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if len(authHeader) < 8 || !strings.HasPrefix(authHeader, "Bearer ") {
@@ -103,6 +104,25 @@ func TokenAuth() gin.HandlerFunc {
 
 		accessToken := authHeader[7:]
 		c.Set("access_token", accessToken)
+		c.Next()
+	}
+}
+
+func AuthTokenInfo() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		AuthAccessToken()(c)
+		tokenInfoHeader := c.GetHeader("Token-Info")
+		if len(tokenInfoHeader) == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		var tokenInfo TokenInfo
+		if err := json.Unmarshal([]byte(tokenInfoHeader), &tokenInfo); err != nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Set("token_info", &tokenInfo)
 		c.Next()
 	}
 }
