@@ -52,6 +52,7 @@ func (cfg *config) initClient() {
 	if err := rdb.Ping(Ctx).Err(); err != nil {
 		panic(err)
 	}
+	rdb.AddHook(NewRedisHook())
 
 	RDB = rdb
 }
