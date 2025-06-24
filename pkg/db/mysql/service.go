@@ -17,13 +17,13 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 
 	sql, rows := fc()
 
-	elapsed := time.Since(begin)
+	latency := time.Since(begin)
 	startAt := begin.UnixMilli()
 	endAt := time.Now().UnixMilli()
 
 	logEntry := &logEntry{
 		StartAt: startAt,
-		Elapsed: endAt - startAt,
+		Latency: endAt - startAt,
 		Rows:    rows,
 		SQL:     sql,
 		EndAt:   endAt,
@@ -39,7 +39,7 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 	switch {
 	case err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && gl.LogLevel >= logger.Error:
 		entry.Error()
-	case elapsed > 200*time.Millisecond && gl.LogLevel >= logger.Warn:
+	case latency > 200*time.Millisecond && gl.LogLevel >= logger.Warn:
 		entry.Warn()
 	case gl.LogLevel >= logger.Info:
 		entry.Info()

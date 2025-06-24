@@ -26,7 +26,7 @@ func (h *RedisHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 
 		logEntry := &logEntry{
 			StartAt: startAt,
-			Elapsed: endAt - startAt,
+			Latency: endAt - startAt,
 			Cmds:    []string{cmd.String()},
 			EndAt:   endAt,
 		}
@@ -63,7 +63,7 @@ func (h *RedisHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.Pr
 		entry := logrus.WithFields(logrus.Fields{
 			"redis": &logEntry{
 				StartAt: startAt,
-				Elapsed: endAt - startAt,
+				Latency: endAt - startAt,
 				Cmds:    result,
 				EndAt:   endAt,
 			},
