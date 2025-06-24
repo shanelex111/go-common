@@ -32,7 +32,7 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 		logEntry.Msg = err.Error()
 	}
 
-	entry := logrus.WithFields(logrus.Fields{
+	entry := logrus.WithField("context", ctx).WithFields(logrus.Fields{
 		"mysql": logEntry,
 	})
 
