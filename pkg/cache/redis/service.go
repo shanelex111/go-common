@@ -34,7 +34,7 @@ func (h *RedisHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 			logEntry.Msg = err.Error()
 		}
 
-		entry := logrus.WithField("context", ctx).WithFields(logrus.Fields{
+		entry := logrus.WithFields(logrus.Fields{
 			"redis": logEntry,
 		})
 

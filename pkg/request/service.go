@@ -2,7 +2,6 @@ package request
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -15,11 +14,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type contextKey string
-
 const (
-	XRequestIDKey   = "X-Request-ID"
-	CtxRequestIDKey = contextKey(XRequestIDKey)
+	XRequestIDKey = "X-Request-ID"
 )
 
 type bodyWriter struct {
@@ -94,9 +90,6 @@ func SetUUID() gin.HandlerFunc {
 		}
 		c.Request.Header.Set(XRequestIDKey, requestID)
 		c.Writer.Header().Set(XRequestIDKey, requestID)
-
-		ctx := context.WithValue(c.Request.Context(), CtxRequestIDKey, requestID)
-		c.Request = c.Request.WithContext(ctx)
 
 		c.Next()
 	}
