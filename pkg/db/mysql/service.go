@@ -12,15 +12,20 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 	if gl.LogLevel <= logger.Silent {
 		return
 	}
-	elapsed := time.Since(begin)
+
 	sql, rows := fc()
+
+	elapsed := time.Since(begin)
+	startAt := begin.UnixMilli()
+	endAt := time.Now().UnixMilli()
+
 	entry := logrus.WithFields(logrus.Fields{
 		"mysql": &logEntry{
-			StartAt: begin.UnixMilli(),
-			Elapsed: elapsed.Microseconds(),
+			StartAt: startAt,
+			Elapsed: endAt - startAt,
 			Rows:    rows,
 			SQL:     sql,
-			EndAt:   time.Now().UnixMilli(),
+			EndAt:   endAt,
 		},
 	})
 	switch {
