@@ -31,7 +31,13 @@ func initConfig(v *viper.Viper) *config {
 }
 
 func (cfg *config) initClient() {
-	db, err := gorm.Open(mysql.Open(cfg.DSN))
+	gLogger := &GormLogger{
+		LogLevel: GormLogLevel(),
+	}
+
+	db, err := gorm.Open(mysql.Open(cfg.DSN), &gorm.Config{
+		Logger: gLogger,
+	})
 	if err != nil {
 		panic(err)
 	}
