@@ -3,9 +3,10 @@ package redis
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 func NewRedisHook() redis.Hook {
@@ -23,13 +24,18 @@ func (h *RedisHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 		startAt := start.UnixMilli()
 		endAt := time.Now().UnixMilli()
 
+		logEntry := &logEntry{
+			StartAt: startAt,
+			Elapsed: endAt - startAt,
+			Cmds:    []string{cmd.String()},
+			EndAt:   endAt,
+		}
+		if err != nil {
+			logEntry.Msg = err.Error()
+		}
+
 		entry := logrus.WithFields(logrus.Fields{
-			"redis": &logEntry{
-				StartAt: startAt,
-				Elapsed: endAt - startAt,
-				Cmds:    []string{cmd.String()},
-				EndAt:   endAt,
-			},
+			"redis": logEntry,
 		})
 
 		if err != nil && !errors.Is(err, redis.Nil) {

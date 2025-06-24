@@ -7,4 +7,5 @@ type logEntry struct {
 	Elapsed int64    `json:"elapsed"`
 	Cmds    []string `json:"cmds"`
 	EndAt   int64    `json:"end_at"`
+	Msg     string   `json:"msg"`
 }

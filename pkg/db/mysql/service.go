@@ -21,15 +21,21 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 	startAt := begin.UnixMilli()
 	endAt := time.Now().UnixMilli()
 
+	logEntry := &logEntry{
+		StartAt: startAt,
+		Elapsed: endAt - startAt,
+		Rows:    rows,
+		SQL:     sql,
+		EndAt:   endAt,
+	}
+	if err != nil {
+		logEntry.Msg = err.Error()
+	}
+
 	entry := logrus.WithFields(logrus.Fields{
-		"mysql": &logEntry{
-			StartAt: startAt,
-			Elapsed: endAt - startAt,
-			Rows:    rows,
-			SQL:     sql,
-			EndAt:   endAt,
-		},
+		"mysql": logEntry,
 	})
+
 	switch {
 	case err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && gl.LogLevel >= logger.Error:
 		entry.Error()
