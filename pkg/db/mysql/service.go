@@ -16,9 +16,11 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 	sql, rows := fc()
 	entry := logrus.WithFields(logrus.Fields{
 		"mysql": &logEntry{
+			StartAt: begin.UnixMilli(),
 			Elapsed: elapsed.Microseconds(),
 			Rows:    rows,
 			SQL:     sql,
+			EndAt:   time.Now().UnixMilli(),
 		},
 	})
 	switch {
