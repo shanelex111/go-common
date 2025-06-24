@@ -2,9 +2,11 @@ package mysql
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
@@ -29,7 +31,7 @@ func (gl *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (str
 		},
 	})
 	switch {
-	case err != nil && gl.LogLevel >= logger.Error:
+	case err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && gl.LogLevel >= logger.Error:
 		entry.Error()
 	case elapsed > 200*time.Millisecond && gl.LogLevel >= logger.Warn:
 		entry.Warn()
