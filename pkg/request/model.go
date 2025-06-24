@@ -26,7 +26,10 @@ type TokenInfo struct {
 }
 
 type TokenInfoAccount struct {
-	ID uint `json:"id"`
+	ID               uint   `json:"id"`
+	Email            string `json:"email"`
+	PhoneCountryCode string `json:"phone_country_code"`
+	PhoneNumber      string `json:"phone_number"`
 }
 type TokenInfoAccess struct {
 	Token            string `json:"token"`
