@@ -22,6 +22,7 @@ var (
 type config struct {
 	Port string `mapstructure:"port"`
 	Mode string `mapstructure:"mode"`
+	Name string `mapstructure:"name"`
 }
 
 func Init(v *viper.Viper) {
@@ -53,4 +54,8 @@ func GetMode() string {
 
 func GetPort() string {
 	return cfg.Port
+}
+
+func GetName() string {
+	return cfg.Name
 }
