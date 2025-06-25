@@ -62,7 +62,7 @@ func (c *config) initClient() {
 		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
 	)
 
-	configClient, err := clients.CreateConfigClient(map[string]interface{}{
+	configClient, err := clients.CreateConfigClient(map[string]any{
 		"serverConfigs": sc,
 		"clientConfig":  cc,
 	})
