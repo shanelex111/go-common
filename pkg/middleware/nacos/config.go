@@ -20,15 +20,15 @@ var (
 )
 
 type config struct {
-	serverConfig serverConfig `mapstructure:"server_config"`
-	clientConfig clientConfig `mapstructure:"client_config"`
+	serverConfig ServerConfig `mapstructure:"server_config"`
+	clientConfig ClientConfig `mapstructure:"client_config"`
 }
 
-type serverConfig struct {
+type ServerConfig struct {
 	IpAddr string `mapstructure:"ip_addr"`
 	Port   uint64 `mapstructure:"port"`
 }
-type clientConfig struct {
+type ClientConfig struct {
 	NamespaceId string `mapstructure:"namespace_id"`
 	DataID      string `mapstructure:"data_id"`
 	Group       string `mapstructure:"group"`
