@@ -52,10 +52,10 @@ func initConfig(v *viper.Viper) *config {
 
 func (c *config) initClient() {
 	sc := []constant.ServerConfig{
-		{
-			IpAddr: c.ServerConfig.IpAddr,
-			Port:   c.ServerConfig.Port,
-		},
+		*constant.NewServerConfig(
+			c.ServerConfig.IpAddr,
+			c.ServerConfig.Port,
+		),
 	}
 	cc := *constant.NewClientConfig(
 		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
