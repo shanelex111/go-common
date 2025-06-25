@@ -20,8 +20,8 @@ var (
 )
 
 type config struct {
-	ServerConfig serverConfig `mapstructure:"server_config"`
-	ClientConfig clientConfig `mapstructure:"client_config"`
+	ServerConfigs []serverConfig `mapstructure:"server_configs"`
+	ClientConfig  clientConfig   `mapstructure:"client_config"`
 }
 
 type serverConfig struct {
@@ -51,11 +51,15 @@ func initConfig(v *viper.Viper) *config {
 }
 
 func (c *config) initClient() {
-	sc := []constant.ServerConfig{
-		{
-			IpAddr: c.ServerConfig.IpAddr,
-			Port:   c.ServerConfig.Port,
-		},
+	sc := []constant.ServerConfig{}
+
+	if len(c.ServerConfigs) != 0 {
+		for _, serverConfig := range c.ServerConfigs {
+			sc = append(sc, constant.ServerConfig{
+				IpAddr: serverConfig.IpAddr,
+				Port:   serverConfig.Port,
+			})
+		}
 	}
 
 	cc := constant.NewClientConfig(
