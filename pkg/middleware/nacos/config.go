@@ -51,8 +51,7 @@ func initConfig(v *viper.Viper) *config {
 }
 
 func (c *config) initClient() {
-	sc := []constant.ServerConfig{}
-
+	var sc []constant.ServerConfig
 	if len(c.ServerConfigs) != 0 {
 		for _, v := range c.ServerConfigs {
 			sc = append(sc, constant.ServerConfig{
@@ -62,11 +61,11 @@ func (c *config) initClient() {
 		}
 	}
 
-	cc := constant.NewClientConfig(
-		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
-	)
+	cc := constant.ClientConfig{
+		NamespaceId: c.ClientConfig.NamespaceId,
+	}
 
-	configClient, err := clients.CreateConfigClient(map[string]any{
+	configClient, err := clients.CreateConfigClient(map[string]interface{}{
 		"serverConfigs": sc,
 		"clientConfig":  cc,
 	})
