@@ -53,13 +53,13 @@ func initConfig(v *viper.Viper) *config {
 func (c *config) initClient() {
 	sc := []constant.ServerConfig{
 		{
-			IpAddr: c.serverConfig.IpAddr,
-			Port:   c.serverConfig.Port,
+			IpAddr: c.ServerConfig.IpAddr,
+			Port:   c.ServerConfig.Port,
 		},
 	}
 
 	cc := constant.NewClientConfig(
-		constant.WithNamespaceId(c.clientConfig.NamespaceId),
+		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
 	)
 
 	configClient, err := clients.CreateConfigClient(map[string]interface{}{
@@ -72,8 +72,8 @@ func (c *config) initClient() {
 
 	// 监听配置变化
 	if err = configClient.ListenConfig(vo.ConfigParam{
-		DataId: c.clientConfig.DataID,
-		Group:  c.clientConfig.Group,
+		DataId: c.ClientConfig.DataID,
+		Group:  c.ClientConfig.Group,
 		OnChange: func(namespace, group, dataId, data string) {
 			fmt.Println("[Nacos] Config Changed, restarting app...")
 			os.Exit(1)
