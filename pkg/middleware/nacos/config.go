@@ -1,8 +1,9 @@
 package nacos
 
 import (
+	"fmt"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
-	"github.com/shanelex111/go-common/pkg/engine"
+	"os"
 	"sync"
 
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
@@ -60,41 +61,24 @@ func (c *config) initClient() {
 		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
 	)
 
-	//configClient, err := clients.NewConfigClient(vo.NacosClientParam{
-	//	ClientConfig:  &cc,
-	//	ServerConfigs: sc,
-	//})
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	//// 监听配置变化
-	//if err = configClient.ListenConfig(vo.ConfigParam{
-	//	DataId: c.ClientConfig.DataID,
-	//	Group:  c.ClientConfig.Group,
-	//	OnChange: func(namespace, group, dataId, data string) {
-	//		fmt.Println("[Nacos] Config Changed, restarting app...")
-	//		os.Exit(1)
-	//	},
-	//}); err != nil {
-	//	panic(err)
-	//}
-
-	// 服务注册
-	namingClient, err := clients.NewNamingClient(vo.NacosClientParam{
+	configClient, err := clients.NewConfigClient(vo.NacosClientParam{
 		ClientConfig:  &cc,
 		ServerConfigs: sc,
 	})
+
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = namingClient.RegisterInstance(vo.RegisterInstanceParam{
-		ServiceName: engine.GetName(),
-	})
-
-	if err != nil {
+	// 监听配置变化
+	if err = configClient.ListenConfig(vo.ConfigParam{
+		DataId: c.ClientConfig.DataID,
+		Group:  c.ClientConfig.Group,
+		OnChange: func(namespace, group, dataId, data string) {
+			fmt.Println("[Nacos] Config Changed, restarting app...")
+			os.Exit(1)
+		},
+	}); err != nil {
 		panic(err)
 	}
 
