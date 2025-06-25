@@ -54,10 +54,10 @@ func (c *config) initClient() {
 	sc := []constant.ServerConfig{}
 
 	if len(c.ServerConfigs) != 0 {
-		for _, serverConfig := range c.ServerConfigs {
+		for _, v := range c.ServerConfigs {
 			sc = append(sc, constant.ServerConfig{
-				IpAddr: serverConfig.IpAddr,
-				Port:   serverConfig.Port,
+				IpAddr: v.IpAddr,
+				Port:   v.Port,
 			})
 		}
 	}
