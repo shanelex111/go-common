@@ -2,10 +2,10 @@ package nacos
 
 import (
 	"fmt"
+	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"os"
 	"sync"
 
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
@@ -20,8 +20,8 @@ var (
 )
 
 type config struct {
-	ServerConfigs []serverConfig `mapstructure:"server_configs"`
-	ClientConfig  clientConfig   `mapstructure:"client_config"`
+	ServerConfig serverConfig `mapstructure:"server_config"`
+	ClientConfig clientConfig `mapstructure:"client_config"`
 }
 
 type serverConfig struct {
@@ -51,24 +51,21 @@ func initConfig(v *viper.Viper) *config {
 }
 
 func (c *config) initClient() {
-	var sc []constant.ServerConfig
-	if len(c.ServerConfigs) != 0 {
-		for _, v := range c.ServerConfigs {
-			sc = append(sc, constant.ServerConfig{
-				IpAddr: v.IpAddr,
-				Port:   v.Port,
-			})
-		}
+	sc := []constant.ServerConfig{
+		{
+			IpAddr: c.ServerConfig.IpAddr,
+			Port:   c.ServerConfig.Port,
+		},
 	}
+	cc := *constant.NewClientConfig(
+		constant.WithNamespaceId(c.ClientConfig.NamespaceId),
+	)
 
-	cc := constant.ClientConfig{
-		NamespaceId: c.ClientConfig.NamespaceId,
-	}
-
-	configClient, err := clients.CreateConfigClient(map[string]any{
-		"serverConfigs": sc,
-		"clientConfig":  cc,
+	configClient, err := clients.NewConfigClient(vo.NacosClientParam{
+		ClientConfig:  &cc,
+		ServerConfigs: sc,
 	})
+
 	if err != nil {
 		panic(err)
 	}
