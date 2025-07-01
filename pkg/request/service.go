@@ -130,3 +130,11 @@ func AuthTokenInfo() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func GetTokenInfo(c *gin.Context) *TokenInfo {
+	tokenInfo, exists := c.Get(TokenInfoKey)
+	if exists {
+		return tokenInfo.(*TokenInfo)
+	}
+	return nil
+}
